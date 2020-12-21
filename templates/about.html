@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}关于该网站{% endblock %}
+
+{% block content %}
+    <div class="align-middle">
+        <div class="jumbotron jumbotron-fluid ">
+            <div class="container text-center">
+                <h1 class="display-2 user-select-none"><a href="/index/" class="badge badge-primary">AIONE</a></h1>
+                <p class="lead user-select-none">ALL IN ONE.</p>
+            </div>
+        </div>
+        <div class="container text-center">
+            <h4>本站共记录数据：</h4>
+            <ul class="list-group ">
+                <a href="/twitter/"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Twitter
+                    <span class="badge badge-primary badge-pill">{{ tw_count }}</span>
+                </a>
+                <a href="/acfun/"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Acfun
+                    <span class="badge badge-primary badge-pill">{{ ac_count }}</span>
+                </a>
+                <a href="/bili/"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Bilibili
+                    <span class="badge badge-primary badge-pill">{{ bi_count }}</span>
+                </a>
+                <a href="/#/"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    已注册用户
+                    <span class="badge badge-primary badge-pill">{{ user_count }}</span>
+                </a>
+                <a href="/#/"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    剩余注册数量
+                    <span class="badge badge-primary badge-pill">{{ left_user_count }}</span>
+                </a>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+

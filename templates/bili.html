@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load dealwithtime %}
+{% load makeurl %}
+
+
+{% block title %}Bili{% endblock %}
+
+{% block content %}
+    {% if request.session.is_login %}
+        {% if request.session.user_level > -1 %}
+            <div class="container text-center">
+                {% for i in data %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ i.author }}</h5>
+                            <p class="card-text">{{ i.title }}</p>
+                            <p class="card-text"><small class="text-muted">{{ i.created|dealwithtime }}</small></p>
+                        </div>
+                        <a href="{{ i.aid|makeurl }}"><img src="{{ i.pic|makeurl }}" class="card-img-top" alt="cover pic"></a>
+                    </div>
+                    <br/>
+                {% endfor %}
+            </div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    {% if pages.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ pages.previous_page_number }}">Pre</a>
+                        </li>
+                    {% endif %}
+                    {% if current_page|add:-2 > 0 %}
+                        <li class="page-item"><a class="page-link"
+                                                 href="?page={{ current_page|add:-2 }}">{{ current_page|add:-2 }}</a></li>
+                    {% endif %}
+                    {% if current_page|add:-1 > 0 %}
+                        <li class="page-item"><a class="page-link"
+                                                 href="?page={{ current_page|add:-1 }}">{{ current_page|add:-1 }}</a></li>
+                    {% endif %}
+                    <li class="page-item"><a class="page-link" href="?page={{ current_page }}">{{ current_page }}</a></li>
+                    {% if pages.has_next %}
+                        <li class="page-item"><a class="page-link"
+                                                 href="?page={{ current_page|add:1 }}">{{ current_page|add:1 }}</a></li>
+                        {% if current_page|add:2 < pages.paginator.num_pages %}
+                            <li class="page-item"><a class="page-link"
+                                                     href="?page={{ current_page|add:2 }}">{{ current_page|add:2 }}</a></li>
+                        {% endif %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ pages.next_page_number }}">Next</a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ pages.paginator.num_pages }}">End</a>
+                    </li>
+                </ul>
+            </nav>
+        {% else %}
+            <br/>
+            <h2 class="text-center">对不起，您的等级不够，无法浏览该页面！</h2>
+        {% endif %}
+    {% else %}
+        <br/>
+        <h2 class="text-center">没有登录，无法浏览该页面！</h2>
+    {% endif %}
+{% endblock %}
