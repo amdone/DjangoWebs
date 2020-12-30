@@ -29,10 +29,13 @@ def login(request):
                     request.session['user_id'] = user.id
                     request.session['user_name'] = user.name
                     request.session['user_level'] = user.level
+                    request.session['user_exp'] = user.exp
+                    models.User.objects.filter(name=username).update(last_login_time=datetime.datetime.now())
                     return redirect('/index/')
                 else:
                     message = "密码不正确！"
-            except:
+            except Exception as e:
+                print(e)
                 message = "用户不存在！"
         return render(request, 'login/login.html', locals())
 
@@ -100,4 +103,40 @@ def logout(request):
 
 def profile(request):
     pass
+    return render(request, 'login/profile.html', {'msg_type': 'active1'})
+
+
+def upgrade(request):
+    if request.method == "POST":
+        up_code = request.POST.get('up_code', '')
+        s_code = {}
+        try:
+            s_code = \
+                models.Exp.objects.all().values('id', 'code', 'add', 'usage', 'deadtime', 'type').filter(code=up_code)[
+                    0]
+        except:
+            pass
+        # print(s_code)
+        if not s_code:
+            message = "请检查升级码是否正确！"
+            return render(request, 'login/profile.html', {'message': message, 'msg_type': 'active3'})
+        else:
+            if s_code['type'] == 'level':
+                if s_code['add'] <= request.session['user_level']:
+                    message = "您的级别已经比这个升级码还要高，无法升级！"
+                    return render(request, 'login/profile.html', {'message': message, 'msg_type': 'active3'})
+                elif s_code['deadtime']:
+                    time_now = datetime.datetime.now()
+                    if time_now.__gt__(s_code['deadtime']):
+                        message = "该升级码已经过期！"
+                        return render(request, 'login/profile.html', {'message': message, 'msg_type': 'active3'})
+                else:
+                    models.User.objects.filter(id=request.session['user_id']).update(level=s_code['add'])
+                    models.Exp.objects.filter(code=up_code).update(usage=s_code['usage'] - 1)
+                    request.session['user_level'] = s_code['add']
+                    message = "升级成功！"
+                    if s_code['usage'] - 1 < 1:
+                        models.Exp.objects.filter(code=up_code).delete()
+                    return render(request, 'login/profile.html',
+                                  {'message': message, 'msg_type': 'active3', 'msg_ok': True})
     return render(request, 'login/profile.html')
