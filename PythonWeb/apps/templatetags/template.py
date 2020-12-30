@@ -36,3 +36,25 @@ def makeurl(sstr):
         return 'https://www.acfun.cn/v/{}'.format(linkid)
     else:
         return 'https://www.bilibili.com/video/av{}'.format(linkid)
+
+
+@register.filter(name="twpic")
+def twpic(sstr: str):
+    res = []
+    if '@' in sstr:
+        pics = sstr.split('@')
+        for pic in pics:
+            if pic != '':
+                res.append(pic)
+    return res
+
+
+@register.filter(name="formatTimeFromYoutube")
+def formatTimeFromYoutube(st):
+    res_time = '{}-{}-{} {}:{}:{}'.format(st[:4], st[4:6], st[6:8], st[8:10], st[10:12], st[12:14])
+    return res_time
+
+
+@register.filter(name="ToStr")
+def ToStr(sword):
+    return str(sword)
