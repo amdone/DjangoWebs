@@ -20,17 +20,22 @@ from PythonWeb import views
 from acfun import toll
 from bili import views as bili
 from login import views as login
+from youtube import views as youtube
 from django.contrib import admin
+from other import views as other
+from twitter import views as twitter
 
 urlpatterns = [
     url(r'^$', views.index),
-    url(r'^captcha', include('captcha.urls')),
+    url(r'^comments/', include('django_comments.urls')),
+    url(r'captcha/', include('captcha.urls')),
     url(r'^admin/', admin.site.urls),
     path('acfun/', include("apps.acfun.urls")),
     path('bili/', bili.bili),
+    path('youtube/', youtube.youtube),
     path('index/', views.index),
     # path('test/', views.test),
-    path('twitter/', views.twitter),
+    path('twitter/', twitter.twitter),
     path('toll/', toll.toll),
     path('toll2/', toll.toll2),
     path('toll-form/', toll.toll_form),
@@ -42,4 +47,11 @@ urlpatterns = [
     path('twittertools/', views.twittertools),
     path('acfuntools/', views.acfuntools),
     path('bilitools/', views.bilitools),
+    path('search/', views.search),
+    path('weblog/', views.weblog),
+    path('upgrade/', login.upgrade),
+    path('level/', other.level),
+    path('black/', other.black),
+    path('board/', other.board),
+    path('recomment/', other.recomment),
 ]

@@ -11,8 +11,10 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+from captcha import *
 import os
 import sys
+import platform
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,12 +41,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.templatetags.template',
+    'django_comments',
+    'django.contrib.sites',
+    # 'django.contrib.admin.apps.SimpleAdminConfig',
+    'django.forms',
     'PythonWeb',
     'acfun',
     'bili',
     'login',
+    'twitter',
+    'youtube',
+    'other',
     'captcha',
 ]
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -75,6 +85,9 @@ TEMPLATES = [
                 "dealwithtime": "apps.templatetags.template",
                 "isp2": "apps.templatetags.template",
                 "makeurl": "apps.templatetags.template",
+                "twpic": "apps.templatetags.template",
+                "formatTimeFromYoutube": "apps.templatetags.template",
+                "ToStr": "apps.templatetags.template",
             },
         },
 
@@ -86,43 +99,105 @@ WSGI_APPLICATION = 'PythonWeb.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'default.db'),
-        # 'NAME': '/home/myspider/twitter/tweets.db',
-    },
-    'twitterdb': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'tweets.db'),
-        # 'NAME': '/home/myspider/twitter/tweets.db',
-    },
-    'acfundb': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'acfun_data.db'),
-        # 'NAME': '/home/myspider/acfun/acfun_data.db',
-    },
-    'bilidb': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'bili_data.db'),
-        # 'NAME': '/home/myspider/bilidown/bili_data.db',
-    },
-    'logindb': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'login.db'),
-    },
+if platform.system() == 'Windows':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'default.db'),
+            # 'NAME': '/home/myspider/twitter/tweets.db',
+        },
+        'twitterdb': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'tweets.db'),
+            # 'NAME': '/home/myspider/twitter/tweets.db',
+        },
+        'acfundb': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'acfun_data.db'),
+            # 'NAME': '/home/myspider/acfun/acfun_data.db',
+        },
+        'bilidb': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'bili_data.db'),
+            # 'NAME': '/home/myspider/bilidown/bili_data.db',
+        },
+        'youtube_db': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'data_youtube.db'),
+            # 'NAME': '/home/myspider/youtube/data_youtube.db',
+        },
+        'logindb': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'login.db'),
+        },
+        'other_db': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db_other.db'),
+        },
 
-}
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'default.db'),
+            # 'NAME': '/home/myspider/twitter/tweets.db',
+        },
+        'twitterdb': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            # 'NAME': os.path.join(BASE_DIR, 'tweets.db'),
+            'NAME': '/home/myspider/twitter/tweets.db',
+        },
+        'acfundb': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            # 'NAME': os.path.join(BASE_DIR, 'acfun_data.db'),
+            'NAME': '/home/share/abd/acfun_data.db',
+        },
+        'bilidb': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            # 'NAME': os.path.join(BASE_DIR, 'bili_data.db'),
+            'NAME': '/home/myspider/bilidown/bili_data.db',
+        },
+        'youtube_db': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            # 'NAME': os.path.join(BASE_DIR, 'data_youtube.db'),
+            'NAME': '/home/myspider/youtube/data_youtube.db',
+        },
+        'logindb': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'login.db'),
+        },
+        'other_db': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db_other.db'),
+        },
+
+    }
 
 DATABASE_ROUTERS = ['PythonWeb.database_router.DatabaseAppsRouter']
 DATABASE_APPS_MAPPING = {
     # example:
     # 'app_name':'database_name',
+    # 'core': 'default',
+    # 'auth': 'default',
+    # 'authtoken': 'default',
+    'django.contrib.admin': 'default',
+    'django.contrib.auth': 'default',
+    'django.contrib.contenttypes': 'default',
+    'django.contrib.sessions': 'default',
+    'django.contrib.messages': 'default',
+    'django.contrib.staticfiles': 'default',
     'PythonWeb': 'default',
     'twitter': 'twitterdb',
     'acfun': 'acfundb',
     'login': 'logindb',
     'bili': 'bilidb',
+    'youtube': 'youtube_db',
+    'captcha': 'default',
+    'other': 'other_db',
+    'django.contrib.sites': 'default',
+    'django_comments': 'default',
+    'django.contrib.sessions': 'default',
 }
 
 # Password validation
@@ -161,29 +236,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-##加app列表INSTALLED_APPS =[# 校验码'captcha',]## django_simple_captcha 验证码配置
+# Captcha Settings
+CAPTCHA_LENGTH = 5
 
-# 格式
-CAPTCHA_OUTPUT_FORMAT = u'%(text_field)s %(hidden_field)s %(image)s'
+CAPTCHA_IMAGE_SIZE = (120, 25)
 
-# 字体倾斜度
-CAPTCHA_LETTER_ROTATION = (-70, 35)
+CAPTCHA_TIMEOUT = 1
 
-# 噪点样式
-CAPTCHA_NOISE_FUNCTIONS = (
-    # 'captcha.helpers.noise_null',  # 没有样式
-    'captcha.helpers.noise_arcs',  # 线
-    'captcha.helpers.noise_dots',  # 点
-)
+CAPTCHA_TEXT_FIELD_TEMPLATE = os.path.join(BASE_DIR, './templates/other/field_template.html')
 
-# 图片大小
-CAPTCHA_IMAGE_SIZE = (90, 25)
-CAPTCHA_BACKGROUND_COLOR = '#ffffff'
-CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.random_char_challenge'  # 图片中的文字为随机英文字母，如 mdsh# CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge' # 图片中的文字为数字表达式，如1+2=</span>
-
-CAPTCHA_LENGTH = 4  # 字符个数
-CAPTCHA_TIMEOUT = 3  # 超时时间(minutes),默认为5分钟
-# 是否测试模式,测试模式下输入任何字符都可通过
-CAPTCHA_TEST_MODE = False
-
-# CAPTCHA_MATH_CHALLENGE_OPERATOR='math_challenge'
+CAPTCHA_OUTPUT_FORMAT = u'%(image)s %(hidden_field)s %(text_field)s'
