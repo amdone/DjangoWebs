@@ -1,4 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}用户主页{% endblock %}
+{% block content %}
 
-<h2 class="text-center">当前登录：{{ request.session.user_name }}</h2>
-<h2 class="text-center">用户id：{{ request.session.user_id }}</h2>
-<h2 class="text-center">用户等级：{{ request.session.user_level }}</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+
+                    <a class="nav-link {% if msg_type == 'active1' %}active{% endif %}" id="v-pills-home-tab"
+                       data-toggle="pill" href="#v-pills-home"
+                       role="tab"
+                       aria-controls="v-pills-home" aria-selected="false">用户详情</a>
+                    <a class="nav-link {% if msg_type == 'active2' %}active{% endif %}" id="v-pills-profile-tab"
+                       data-toggle="pill" href="#v-pills-profile"
+                       role="tab"
+                       aria-controls="v-pills-profile" aria-selected="false">修改密码</a>
+                    <a class="nav-link {% if msg_type == 'active3' %}active{% endif %}"
+                       id="v-pills-messages-tab" data-toggle="pill"
+                       href="#v-pills-messages"
+                       role="tab"
+                       aria-controls="v-pills-messages" aria-selected="true">
+                        提升等级
+                    </a>
+                    <a class="nav-link {% if msg_type == 'active4' %}active{% endif %}" id="v-pills-settings-tab"
+                       data-toggle="pill" href="#v-pills-settings" role="tab"
+                       aria-controls="v-pills-settings" aria-selected="false">待开发</a>
+                </div>
+            </div>
+            <div class="col-9">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-pane fade {% if msg_type == 'active1' %}show active{% endif %}" id="v-pills-home"
+                         role="tabpanel"
+                         aria-labelledby="v-pills-home-tab">
+                        <div class="list-group">
+                            <a href="#" class="list-group-item list-group-item-action">
+                                用户名 ：{{ request.session.user_name }}
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action">用户id：{{ request.session.user_id }}</a>
+                            <a href="/level/" class="list-group-item list-group-item-action">等级：<span
+                                    class="badge badge-pill badge-warning">{{ request.session.user_level }}</span></a>
+                            <a href="#" class="list-group-item list-group-item-action"
+                               aria-disabled="true">经验值：0</a>
+                        </div>
+{#                        <h4 class="text-center">当前登录：{{ request.session.user_name }}</h4>#}
+{#                        <h4 class="text-center">用户id：{{ request.session.user_id }}</h4>#}
+{#                        <h4 class="text-center">用户等级：<span#}
+{#                                class="badge badge-pill badge-warning">{{ request.session.user_level }}</span></h4>#}
+                    </div>
+                    <div class="tab-pane fade {% if msg_type == 'active2' %}show active{% endif %}" id="v-pills-profile"
+                         role="tabpanel"
+                         aria-labelledby="v-pills-profile-tab">
+                        暂不支持修改！
+                    </div>
+                    <div class="tab-pane fade {% if msg_type == 'active3' %}show active{% endif %}"
+                         id="v-pills-messages"
+                         role="tabpanel"
+                         aria-labelledby="v-pills-messages-tab">
+                        <div class="text-center">
+                            <br><br>
+                            <form action="/upgrade/" method="post">
+                                {% if message %}
+                                    {% if msg_ok == True %}
+                                        <div class="alert alert-success">{{ message }}</div>
+                                    {% else %}
+                                        <div class="alert alert-warning">{{ message }}</div>
+                                    {% endif %}
+
+                                    {#{{ login_form }}#}
+                                {% endif %}
+                                {% csrf_token %}
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="升级码或经验码"
+                                           aria-label="Recipient's username" aria-describedby="button-addon2"
+                                           name="up_code">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary" type="submit" id="button-addon2"
+                                                name="btn_upgrade">提交
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <small id="emailHelp"
+                                   class="form-text text-muted">输入升级码或经验码，实在想升级，可联系站长获得！</small>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade {% if msg_type == 'active4' %}show active{% endif %}"
+                         id="v-pills-settings"
+                         role="tabpanel"
+                         aria-labelledby="v-pills-settings-tab">
+                        请看网站开发计划！
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
