@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}黑区{% endblock %}
+
+{% block content %}
+    {% if request.session.is_login %}
+        {% if request.session.user_level < 8 %}
+            <h2 class="text-center">对不起，您的等级不够，无法浏览该页面！</h2>
+        {% else %}
+            <h2 class="text-center">您已经进入黑区！</h2>
+        {% endif %}
+    {% else %}
+        <h2 class="text-center">你没有登录！</h2>
+    {% endif %}
+{% endblock %}

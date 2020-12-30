@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{#{% load comments %}#}
+{% load ToStr %}
+
+{% block title %}留言板{% endblock %}
+{% block content %}
+    <div class="alert alert-success" role="alert">
+        <strong>所有留言：</strong>
+        <a class="align-self-end" href="/recomment/?mode=add">新增</a>
+    </div>
+    <div class="container">
+        <div class="list-group">
+            {% for i in main %}
+                {% if i.id != 1 %}<br>{% endif %}
+                <a href="/recomment?to_id={{ i.id }}" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">#{{ i.id }}</h5>
+                        <small>{{ i.c_time }}</small>
+                    </div>
+                    <p class="mb-1">{{ i.comment }}</p>
+                    <small>{{ i.user_name }}</small>
+                </a>
+                {% for k,v in second_dict.items %}
+                    {% if k == i.id|ToStr %}
+                        {% for j in v %}
+                            <a href="/recomment?to_id={{ i.id }}" class="w-75 list-group-item list-group-item-action align-self-end">
+                                <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">#{{ j.id }}&nbsp;回复：</h5>
+                                    <small>{{ j.c_time }}</small>
+                                </div>
+                                <p class="mb-1">{{ j.comment }}</p>
+                                <small>{{ j.user_name }}</small>
+                            </a>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
