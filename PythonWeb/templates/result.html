@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load dealwithtime %}
+{% load isp2 %}
+{% load makeurl %}
+{% load twpic %}
+
+{% block title %}搜索结果{% endblock %}
+{% block content %}
+    <div class="container">
+        <h3 class="text-warning">共搜索到：{{ res_count }}条结果, 分{{ pages.paginator.num_pages }}页显示。</h3>
+        {% for i in data %}
+            {% if i.type == 'acfun' %}
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ i.name }}&nbsp;&nbsp;<a href="/acfun/" class="badge badge-danger">Acfun</a>
+                        </h5>
+                        {% if i.link|isp2 %}
+                            <p class="card-text">{{ i.title }}【竖屏】</p>
+                        {% else %}
+                            <p class="card-text">{{ i.title }}</p>
+                        {% endif %}
+                        <p class="card-text"><small class="text-muted">{{ i.uploadtime|dealwithtime }}</small></p>
+                    </div>
+                    <a href="{{ i.link|makeurl }}"><img src="{{ i.cover }}" class="card-img-top"
+                                                        alt="cover pic"></a>
+                </div>
+                <br/>
+            {% endif %}
+            {% if i.type == 'bili' %}
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ i.name }}&nbsp;&nbsp;<a href="/bili/" class="badge badge-info">Bilibili</a>
+                        </h5>
+                        <p class="card-text">{{ i.title }}</p>
+                        <p class="card-text"><small class="text-muted">{{ i.uploadtime|dealwithtime }}</small></p>
+                    </div>
+                    <a href="{{ i.link|makeurl }}"><img src="{{ i.cover|makeurl }}" class="card-img-top"
+                                                        alt="cover pic"></a>
+                </div>
+                <br/>
+            {% endif %}
+            {% if i.type == 'twitter' %}
+                <div class="row">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ i.name }}&nbsp;&nbsp;<a href="/twitter/"
+                                                                              class="badge badge-primary">Twitter</a>
+                            </h5>
+                            <p class="card-text">{{ i.title }}</p>
+                            <p class="card-text"><small class="text-muted">{{ i.uploadtime|dealwithtime }}</small></p>
+                        </div>
+                        {% for j in i.cover|twpic %}
+                            <img src="{{ j }}" class="card-img-top" alt="pic load error">
+                        {% endfor %}
+                    </div>
+                </div>
+                <br>
+            {% endif %}
+            {% if i.type == 'youtube' %}
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ i.name }}&nbsp;&nbsp;<a href="/youtube/" class="badge badge-danger">Youtube</a>
+                        </h5>
+                            <p class="card-text">{{ i.title }}</p>
+                        <p class="card-text"><small class="text-muted">{{ i.uploadtime|dealwithtime }}</small></p>
+                    </div>
+                    <a href="{{ i.link }}"><img src="{{ i.cover }}" class="card-img-top"
+                                                        alt="cover pic"></a>
+                </div>
+                <br/>
+            {% endif %}
+
+        {% endfor %}
+    </div>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            {% if pages.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ pages.previous_page_number }}">Pre</a>
+                </li>
+            {% endif %}
+            {% if current_page|add:-2 > 0 %}
+                <li class="page-item"><a class="page-link"
+                                         href="?page={{ current_page|add:-2 }}">{{ current_page|add:-2 }}</a>
+                </li>
+            {% endif %}
+            {% if current_page|add:-1 > 0 %}
+                <li class="page-item"><a class="page-link"
+                                         href="?page={{ current_page|add:-1 }}">{{ current_page|add:-1 }}</a>
+                </li>
+            {% endif %}
+            <li class="page-item"><a class="page-link text-secondary" href="#">{{ current_page }}</a>
+            </li>
+            {% if pages.has_next %}
+                <li class="page-item"><a class="page-link"
+                                         href="?page={{ current_page|add:1 }}">{{ current_page|add:1 }}</a></li>
+                {% if current_page|add:2 < pages.paginator.num_pages %}
+                    <li class="page-item"><a class="page-link"
+                                             href="?page={{ current_page|add:2 }}">{{ current_page|add:2 }}</a>
+                    </li>
+                {% endif %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ pages.next_page_number }}">Next</a>
+                </li>
+            {% endif %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ pages.paginator.num_pages }}">End</a>
+            </li>
+        </ul>
+    </nav>
+{% endblock %}

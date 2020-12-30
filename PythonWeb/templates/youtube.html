@@ -1,27 +1,22 @@
 {% extends 'base.html' %}
-{% load dealwithtime %}
-{% load isp2 %}
-{% load makeurl %}
-
-
-{% block title %}Acfun{% endblock %}
+{% load formatTimeFromYoutube %}
+{% block title %}youtube{% endblock %}
 
 {% block content %}
-    {% if request.session.is_login %}
+    <div class="container">
+        {% if request.session.is_login %}
         {% if request.session.user_level > -1 %}
             <div class="container text-center">
                 {% for i in data %}
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">{{ i.acname }}</h5>
-                            {% if i.acno|isp2 %}
-                                <p class="card-text">{{ i.title }}【竖屏】</p>
-                            {% else %}
+                            <h5 class="card-title">{{ i.channeltitle }}</h5>
+
                                 <p class="card-text">{{ i.title }}</p>
-                            {% endif %}
-                            <p class="card-text"><small class="text-muted">{{ i.uploadtime|dealwithtime }}</small></p>
+
+                            <p class="card-text"><small class="text-muted">{{ i.uploadtime|formatTimeFromYoutube }}</small></p>
                         </div>
-                        <a href="{{ i.acno|makeurl }}"><img src="{{ i.cover }}" class="card-img-top"
+                        <a href="{{ i.video }}"><img src="{{ i.cover }}" class="card-img-top"
                                                             alt="cover pic"></a>
                     </div>
                     <br/>
@@ -71,5 +66,6 @@
         <br/>
         <h2 class="text-center">没有登录，无法浏览该页面！</h2>
     {% endif %}
-{% endblock %}
+    </div>
 
+{% endblock %}
